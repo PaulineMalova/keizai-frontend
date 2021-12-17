@@ -4,7 +4,8 @@ import axios from "axios";
 
 import './App.css';
 
-const baseURL = "https://keizai-app.herokuapp.com";
+// const baseURL = "https://keizai-app.herokuapp.com";
+const baseURL = "http://127.0.0.1:8000";
 
 function Register() {
     const [passwordShown, setPasswordShown] = useState(false);
@@ -20,13 +21,22 @@ function Register() {
             .post(baseURL + "/register", data, { headers: { "Content-Type": "application/json" } })
             .then((response) => {
                 console.log(response.data);
-                if (response.data.user_id) {
-                    window.location = "/home"
+                console.log(response.status)
+                if (response.data.user_id || response.status === 201) {
+                    window.location = "/"
+                }
+                if (response.status === 200) {
+                    window.location = "/"
                 }
             })
             .catch(error => {
                 console.log('An error occurred:', error.response);
-                alert(error.response.data.detail)
+                if (error.response.data) {
+                    alert(error.response.data.detail)
+                }
+                else {
+                    alert("Something went wrong")
+                }
             });
     };
 

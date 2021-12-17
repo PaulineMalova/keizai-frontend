@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +9,8 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import './App.css';
 const eye = <FontAwesomeIcon icon={faEye} />;
 
+const baseURL = "http://127.0.0.1:8000";
+
 function ResetPassword() {
     const [passwordShown, setPasswordShown] = useState(false);
     const togglePasswordVisiblity = () => {
@@ -15,7 +18,27 @@ function ResetPassword() {
     };
 
     const { register, handleSubmit } = useForm();
-    const onSubmit = (data) => console.log(data);
+    const onSubmit = (data) => {
+        console.log(data);
+        axios
+            .post(baseURL + "/reset-password", data, { headers: { "Content-Type": "application/json" } })
+            .then((response) => {
+                console.log(response.data);
+                console.log(response.status)
+                if (response.status === 200) {
+                    window.location = "/"
+                }
+            })
+            .catch(error => {
+                console.log('An error occurred:', error.response);
+                if (error.response.data) {
+                    alert(error.response.data.detail)
+                }
+                else {
+                    alert("Something went wrong")
+                }
+            });
+    };
 
     return (
         <body>
